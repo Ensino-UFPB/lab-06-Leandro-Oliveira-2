@@ -1,3 +1,12 @@
+document.getElementById('telefone').addEventListener('input', (event) => {
+    handleTelefone(event);
+    valida(event.target);
+});
+
+document.getElementById('instagram').addEventListener('input', (event) => {
+    valida(event.target);
+});
+
 export function valida(input) {
     const tipoDeInput = input.dataset.tipo
 
@@ -29,6 +38,14 @@ const mensagensDeErro = {
         valueMissing: 'O campo de email não pode estar vazio.',
         typeMismatch: 'O email digitado não é válido.'
     },
+    instagram: {
+        valueMissing: "O campo de Instragram Não pode estar Vazio",
+        customError: "O Instagram digitado não é válido. Lembre-se de adicionar o '@'."
+    },
+    telefone: {
+        valueMissing: "O campo de telefone não pode estar vazio.",
+        customError: 'O telefone digitado não é válido.'
+    },
     senha: {
         valueMissing: 'O campo de senha não pode estar vazio.',
         patternMismatch: 'A senha deve conter entre 6 a 12 caracteres, deve conter pelo menos uma letra maiúscula, um número e não deve conter símbolos.'
@@ -59,6 +76,8 @@ const mensagensDeErro = {
 
 const validadores = {
     dataNascimento:input => validaDataNascimento(input),
+    telefone: input => validPhone(input),
+    instagram: input => validInsta(input),
     cpf:input => validaCPF(input),
     cep:input => recuperarCEP(input)
 }
@@ -131,6 +150,26 @@ function checaEstruturaCPF(cpf) {
     const multiplicador = 10
 
     return checaDigitoVerificador(cpf, multiplicador)
+}
+
+function handleTelefone(event) {
+    const regex = /^([0-9]{2})([0-9]{4,5})([0-9]{4})$/;
+    let str = event.target.value.replace(/[^0-9]/g, "").slice(0, 11); 
+    console.log(str);
+    const result = str.replace(regex, "($1)$2-$3"); 
+    console.log(result);
+    event.target.value = result; 
+    valida(event.target);  
+}
+
+
+function validPhone(phone) {
+    const regex = /^\(\d{2}\)\d{4,5}-\d{4}$/;  
+    let mensagem = '';
+    if (!regex.test(phone.value)) {
+        mensagem = 'O telefone digitado não é válido.';
+    }
+    phone.setCustomValidity(mensagem);  
 }
 
 function checaDigitoVerificador(cpf, multiplicador) {
